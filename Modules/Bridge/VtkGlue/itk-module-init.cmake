@@ -6,7 +6,7 @@
 set(VERSION_MIN "8.1.0")
 
 # Look for VTK
-find_package(VTK NO_MODULE REQUIRED)
+find_package(VTK NO_MODULE)
 
 if(NOT COMMAND vtk_module_config)
   macro(vtk_module_config ns)
@@ -46,6 +46,11 @@ set(_target_prefix "vtk")
 if(VTK_VERSION VERSION_GREATER_EQUAL 8.90.0)
   set(_target_prefix "VTK::")
 endif()
+
+if(NOT TARGET ${_target_prefix}CommonCore)
+  message(FATAL_ERROR "VTK hasn't been found.")
+endif()
+
 set(_target_freetypeopengl)
 if(TARGET ${_target_prefix}RenderingFreeType${VTK_RENDERING_BACKEND})
   set(_target_freetypeopengl ${_target_prefix}RenderingFreeType${VTK_RENDERING_BACKEND})

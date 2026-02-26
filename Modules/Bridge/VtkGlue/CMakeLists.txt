@@ -53,7 +53,7 @@ set(ITKVtkGlue_EXPORT_CODE_INSTALL
     "
 set(VTK_DIR \"${VTK_DIR}\")
 
-find_package(VTK NO_MODULE REQUIRED)
+find_package(VTK NO_MODULE)
 
   if(NOT COMMAND vtk_module_config)
     macro(vtk_module_config ns)
@@ -81,6 +81,16 @@ endif()
 set(_target_freetypeopengl)
 if(TARGET ${_target_prefix}RenderingFreeType${VTK_RENDERING_BACKEND})
   set(_target_freetypeopengl ${_target_prefix}RenderingFreeType${VTK_RENDERING_BACKEND})
+endif()
+
+set(_target_prefix "vtk")
+set(_vtk_sys_name "sys")
+if(VTK_VERSION VERSION_GREATER_EQUAL 8.90.0)
+  set(_target_prefix "VTK::")
+  set(_vtk_sys_name "vtksys")
+endif()
+if(NOT TARGET ${_target_prefix}CommonCore)
+  message(FATAL_ERROR "VTK hasn't been found.")
 endif()
 
 set(_required_vtk_libraries
@@ -123,7 +133,7 @@ if(NOT ITK_BINARY_DIR)
     endmacro()
   endif()
 
-  find_package(VTK NO_MODULE REQUIRED)
+  find_package(VTK NO_MODULE)
 
   if(NOT VTK_VERSION)
     set(VTK_VERSION \"${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}.${VTK_BUILD_VERSION}\")
@@ -135,6 +145,17 @@ if(NOT ITK_BINARY_DIR)
       set(VTK_RENDERING_BACKEND OpenGL)
     endif()
   endif()
+
+  set(_target_prefix "vtk")
+  set(_vtk_sys_name "sys")
+  if(VTK_VERSION VERSION_GREATER_EQUAL 8.90.0)
+    set(_target_prefix "VTK::")
+    set(_vtk_sys_name "vtksys")
+  endif()
+  if(NOT TARGET ${_target_prefix}CommonCore)
+    message(FATAL_ERROR "VTK hasn't been found.")
+  endif()
+
   if(TARGET ${_target_prefix}RenderingFreeType${VTK_RENDERING_BACKEND})
     set(_target_freetypeopengl ${_target_prefix}RenderingFreeType${VTK_RENDERING_BACKEND})
   endif()
